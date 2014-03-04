@@ -1,0 +1,5 @@
+#Ingore Everything
+*
+!.gitignore
+!*.cpp
+!README.md
