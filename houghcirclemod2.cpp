@@ -28,7 +28,7 @@ int main(int argc, char** argv)
   vector<Vec3f> circles;
 
   /// Apply the Hough Transform to find the circles
-  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 70, 50, 0, 0 );
+  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 65, 40, 0, 0 );
 
   std::cout<<"Creating Masks: "<<std::endl;
   for(int i = 0; i < circles.size(); i++){
@@ -42,8 +42,9 @@ int main(int argc, char** argv)
  	 Masks.push_back(image);
 
   }
-
-  std::cout<<"Drawing circles: "<<std::endl;
+  
+  std::cout<<"Circles Detected: "<< circles.size() <<std::endl;
+  std::cout<<"Drawing circles "<<std::endl;
   /// Draw the circles detected
   for( size_t i = 0; i < circles.size(); i++ )
   {
@@ -66,13 +67,13 @@ int main(int argc, char** argv)
  for( int i = 0; i < circles.size(); i++ )
   {
 
-   Mat imageDest = cvCreateMat(src.rows, src.cols, CV_8UC3);
-   src.copyTo(imageDest, Masks.at(i));
+   //Mat imageDest = cvCreateMat(src.rows, src.cols, CV_8UC3);
+   //src.copyTo(imageDest, Masks.at(i));
    sprintf(mask_name, "Test%d", i);
    sprintf(path, "Masks/%s.png", mask_name);
    namedWindow(mask_name, CV_WINDOW_NORMAL);
    imshow(mask_name, Masks.at(i));
-   imwrite(path, imageDest);
+   imwrite(path, Masks.at(i));
      
 
   }

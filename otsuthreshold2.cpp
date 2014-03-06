@@ -9,8 +9,11 @@
 #include "cxcore.h"
 #include "cv.h"
 #include "highgui.h"
+#include <fstream>
  
 int GRAYLEVEL = 256;
+char strStartPath[100];
+char strEndPath[100];
 #define MAX_BRIGHTNESS 255
 //const double INFO_THRESHOLD = 0.2;
  
@@ -92,7 +95,7 @@ for (i = 0; i < GRAYLEVEL-1; i++)
 if (omega[i] != 0.0 && omega[i] != 1.0)
 {
 //sigma[i] = (omega[i]*(1.0 - omega[i])) * ((myu[GRAYLEVEL-1] - 2*myu[i]) *
-(myu[GRAYLEVEL-1] - 2*myu[i]));
+(myu[GRAYLEVEL-1] - 2*myu[i]);
 sigma[i] = ((myu[GRAYLEVEL-1]*omega[i] - myu[i]) *
 (myu[GRAYLEVEL-1]*omega[i] - myu[i])) / (omega[i]*(1.0 - omega[i]));
 }
@@ -133,24 +136,45 @@ else
  
 int main(int argc, char* argv[] )
 {
-IplImage* image = 0;
-IplImage* imgBin = 0;
-clock_t start = clock();
-(argc == 3) ? image = cvLoadImage(argv[1], CV_LOAD_IMAGE_GRAYSCALE) :
-cout < < "Usage :n" << argv[0] << " [srcImagePath] [dstimagepath]" < < endl;
- 
-if ( image != NULL )
-{
-imgBin = cvCloneImage(image);
-binarize_otsu(image,imgBin );
-cvSaveImage("otsuresult.png", imgBin);
-cvReleaseImage(&image);
-cvReleaseImage(&imgBin);
-clock_t end = clock();
-double delay = double((double)(end - start) / CLOCKS_PER_SEC);
-printf("processing time : %lf secondsn",delay);
-return EXIT_SUCCESS;
-}
 
-return EXIT_FAILURE;
+  std::vector <std::string> words; // Vector to hold our words read
+  std::string str; // Temp string to
+  std::cout << "Read from a file!" << std::endl;
+  std::ifstream fin("pics.txt"); // Open it up!
+
+
+  while (fin >> str){ 
+    words.push_back(str);
+  }
+  fin.close();
+
+  for (int i = 0; i < words.size(); ++i){
+
+	IplImage* image = 0;
+	IplImage* imgBin = 0;
+	clock_t start = clock();
+
+	const char* imagename = words.at(i).c_str();
+	std::cout<<"Image Name: "<< imagename << std::endl;
+	sprintf(strStartPath, "Masks0/%s", imagename);
+	sprintf(strEndPath, "OtsuEnd/%s", imagename);
+	std::cout<<"Start Path: "<< strStartPath << std::endl;
+	std::cout<<"End Path: "<< strEndPath << std::endl;
+
+	image = cvLoadImage(strStartPath, CV_LOAD_IMAGE_GRAYSCALE);
+	std::cout<<"Load Image "<< std::endl;
+ 
+	//if ( image != NULL )
+	//{
+	imgBin = cvCloneImage(image);
+	binarize_otsu(image,imgBin);
+	cvSaveImage(strEndPath, imgBin);
+	cvReleaseImage(&image);
+	cvReleaseImage(&imgBin);
+	clock_t end = clock();
+	double delay = double((double)(end - start)/CLOCKS_PER_SEC);
+	printf("processing time : %lf secondsn",delay);
+	std::cout<<"Otsu Image "<< std::endl;
+
+  }
 }
