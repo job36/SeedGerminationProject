@@ -1,16 +1,68 @@
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
-#include <stdio.h>
 
+using namespace std;
 using namespace cv;
 
+static void help(char* progName)
+{
+    cout << endl
+        <<  "This program shows how to filter images with mask: the write it yourself and the"
+        << "filter2d way. " << endl
+        <<  "Usage:"                                                                        << endl
+        << progName << " [image_name -- default lena.jpg] [G -- grayscale] "        << endl << endl;
+}
+
+
+void Sharpen(const Mat& myImage,Mat& Result);
+
+int main( int argc, char* argv[])
+{
+    help(argv[0]);
+    const char* filename = argc >=2 ? argv[1] : "1.jpg";
+
+    Mat I, J, K;
+
+    if (argc >= 3 && !strcmp("G", argv[2]))
+        I = imread( filename, CV_LOAD_IMAGE_GRAYSCALE);
+    else
+        I = imread( filename, CV_LOAD_IMAGE_COLOR);
+
+    namedWindow("Input", WINDOW_AUTOSIZE);
+    namedWindow("Output", WINDOW_AUTOSIZE);
+
+    imshow("Input", I);
+    double t = (double)getTickCount();
+
+    Sharpen(I, J);
+
+    t = ((double)getTickCount() - t)/getTickFrequency();
+    cout << "Hand written function times passed in seconds: " << t << endl;
+
+    imshow("Output", J);
+    waitKey(0);
+	imwrite("sharpened.png", J);
+    Mat kern = (Mat_<char>(3,3) <<  0, -1,  0,
+                                   -1,  5, -1,
+                                    0, -1,  0);
+    t = (double)getTickCount();
+    filter2D(I, K, I.depth(), kern );
+    t = ((double)getTickCount() - t)/getTickFrequency();
+    cout << "Built-in filter2D time passed in seconds:      " << t << endl;
+
+    imshow("Output", K);
+
+    waitKey(0);
+    return 0;
+}
 void Sharpen(const Mat& myImage,Mat& Result)
 {
     CV_Assert(myImage.depth() == CV_8U);  // accept only uchar images
 
-    Result.create(myImage.size(),myImage.type());
     const int nChannels = myImage.channels();
+    Result.create(myImage.size(),myImage.type());
 
     for(int j = 1 ; j < myImage.rows-1; ++j)
     {
@@ -32,31 +84,3 @@ void Sharpen(const Mat& myImage,Mat& Result)
     Result.col(0).setTo(Scalar(0));
     Result.col(Result.cols-1).setTo(Scalar(0));
 }
-
-/** @function main */
-int main(int argc, char** argv)
-{
-  Mat src, frame;
-
-
-  /// Read the image
-  src = imread( argv[1], 1 );
-  frame = src;
-
-  if( !src.data )
-    { return -1; }
-
-  src = Sharpen(src, frame);
-
-  std::cout<<"Showing Results: "<<std::endl;
-  /// Show your results
-  //namedWindow( "frame", CV_WINDOW_NORMAL );
-  namedWindow( "src", CV_WINDOW_NORMAL );
-  //imshow( "frame", frame );
-  imshow( "src", src);
-  
-  std::cout<<"Ends: "<<std::endl;
-  waitKey(0);
-  return 0;
-}
-
