@@ -28,10 +28,12 @@ int main(int argc, char** argv)
   vector<Vec3f> circles;
 
   /// Apply the Hough Transform to find the circles
-  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 65, 40, 0, 0 );
+  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 30, 35, 400, 515 );
 
   std::cout<<"Creating Masks: "<<std::endl;
   for(int i = 0; i < circles.size(); i++){
+	
+	std::cout<<"Radius: "<<cvRound(circles[i][2])<<std::endl;
 	//creating a new image
          Mat image(src.rows,src.cols, CV_8UC3);
 

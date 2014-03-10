@@ -25,13 +25,14 @@ int main(int argc, char** argv)
   vector<Vec3f> circles;
 
   /// Apply the Hough Transform to find the circles
-  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 100, 60, 0, 0 );
+  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 25, 35, 120, 150 );
 
   /// Draw the circles detected
   for( size_t i = 0; i < circles.size(); i++ )
   {
       Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
       int radius = cvRound(circles[i][2]);
+	std::cout << "radius" << radius <<std::endl;
       // circle center
       circle( src, center, 3, Scalar(0,255,0), -1, 8, 0 );
       // circle outline

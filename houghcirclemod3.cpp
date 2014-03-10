@@ -10,7 +10,7 @@ char strStartPath[100];
 /** @function main */
 int main(int argc, char** argv)
 {
-  Mat src, src_gray;
+  //Mat src_gray;
   std::vector<Mat> Masks;
   char mask_name[50];
   char path[50];
@@ -26,6 +26,7 @@ int main(int argc, char** argv)
   fin.close();
 
   for (int i = 0; i < words.size(); ++i){
+	  Mat src_gray;
 
 
 	  const char* imagename = words.at(i).c_str();
@@ -36,8 +37,9 @@ int main(int argc, char** argv)
 	  //std::cout<<"End Path: "<< strEndPath << std::endl;
 
 	  /// Read the image
-	  src = imread( strStartPath, 1 );
-
+	  Mat src = imread( strStartPath, 1 );
+	  //Mat imageDest = cvCreateMat(src.rows, src.cols, CV_8UC3);
+	  //imageDest.setTo(Scalar(0,0,0));
 	  if( !src.data )
 	    { return -1; }
 
@@ -50,7 +52,7 @@ int main(int argc, char** argv)
 	  vector<Vec3f> circles;
 
 	  /// Apply the Hough Transform to find the circles
-	  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 70, 50, 0, 0 );
+	  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 25, 35, 480, 510 );
 
 	  std::cout<<"Creating Masks: "<<std::endl;
 	  for(int i = 0; i < circles.size(); i++){
@@ -82,15 +84,23 @@ int main(int argc, char** argv)
 	 for( int i = 0; i < circles.size(); i++ )
 	  {
 
-	   Mat imageDest = cvCreateMat(src.rows, src.cols, CV_8UC3);
-	   src.copyTo(imageDest, Masks.at(i));
+	   //src.copyTo(imageDest, Masks.at(i));
 	   //sprintf(mask_name, "imagename", i);
 	   sprintf(path, "Masks%d/%s", i, imagename);
 	   namedWindow(mask_name, CV_WINDOW_NORMAL);
 	   imshow(mask_name, Masks.at(i));
-	   imwrite(path, imageDest);
+	   imwrite(path, Masks.at(i));
+
+	   //Cleanup
+	   //imageDest.release();
+	   Masks.at(i).setTo(Scalar(0,0,0));
+	   //Masks.at(i).release();
+	   src.release();
+	   src_gray.release();
 
 	  }
+
+
 
   }
   
