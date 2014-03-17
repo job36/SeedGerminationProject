@@ -14,7 +14,7 @@ int main( int argc, char** argv ){
 	//cvtColor(image, imagelab, CV_LBGR2Lab); //convert rgb to lab
 	//cvtColor(image, imagehsv, CV_BGR2HSV); //convert rgb to hsv
 	//cvtColor(image, imageycrcb, CV_BGR2YCrCb); //convert rgb to YCbCr
-	cvtColor(image, imagehsv, CV_BGR2XYZ);
+	cvtColor(image, imagehsv, CV_BGR2HSV);
 	namedWindow( "Original Image", CV_WINDOW_NORMAL );// Create a window for display.
                       // Show our image inside it.
 
