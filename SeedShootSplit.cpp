@@ -39,40 +39,42 @@ int main( int argc, char** argv ){
 
 	Mat image,imagehsv,imagelab,fin_img,im0;
 	image = cvLoadImage(argv[1], CV_LOAD_IMAGE_COLOR);
-	//im0 = image.clone();
-	//image.copyTo(im0(Rect(left, top, image.cols, image.rows)));
+	im0 = image.clone();
 
-	//cvtColor(image, imagelab, CV_LBGR2Lab); //convert rgb to lab
-	//cvtColor(image, imagehsv, CV_BGR2HSV); //convert rgb to hsv
-	//cvtColor(image, imageycrcb, CV_BGR2YCrCb); //convert rgb to YCbCr
-	cvtColor(image, imagehsv, CV_BGR2HSV);
-	namedWindow("Original Image",CV_WINDOW_NORMAL);
-	namedWindow("H",CV_WINDOW_NORMAL);
-	namedWindow("B",CV_WINDOW_NORMAL);
-	namedWindow("plantpix",CV_WINDOW_NORMAL);
 
+	cvtColor(image, imagehsv, CV_BGR2Lab);
+	namedWindow( "Original Image", CV_WINDOW_NORMAL );
+
+	//imshow("C", cmyk[0]);
+
+	//hsvs, cmykc, cmykm
+
+	// Create Windows
+	namedWindow("C", CV_WINDOW_NORMAL);
+	namedWindow("M",CV_WINDOW_NORMAL);
+	namedWindow("S",CV_WINDOW_NORMAL);
 	// Create Matrices (make sure there is an image in input!)
 
 	Mat hsv_channel[3];
-	Mat RGB_channel[3];
 
+	Mat cmyk_channel[4];
 	imshow( "Original Image", image );
 
 
 	// The actual splitting.
 	split(imagehsv, hsv_channel);
-	split(image, RGB_channel);
-	
-	imshow("H", hsv_channel[0]);
+
+	imshow("S", hsv_channel[2]);
+
+	namedWindow("plantpix",CV_WINDOW_NORMAL);
 
 	Mat plantpix(image.rows,image.cols, CV_8UC1);
 	
-	imshow("B", RGB_channel[0]);
-	
-	RGB_channel[0].convertTo(RGB_channel[0],CV_16UC1);	
-	plantpix.convertTo(plantpix, CV_16UC1);
+	hsv_channel[2].convertTo(hsv_channel[2],CV_32F);
+	divide(hsv_channel[2],255,hsv_channel[2]);	
+	plantpix.convertTo(plantpix, CV_32F);
 
-	plantpix = RGB_channel[0];
+	plantpix = hsv_channel[2];
 	//imshow("plantpix", plantpix);
 	//waitKey(0);
 
@@ -83,22 +85,40 @@ int main( int argc, char** argv ){
 	Point maxLoc;
 	
 	minMaxLoc(plantpix,&minVal, &maxVal, &minLoc, &maxLoc);
-	cout << "min val with RGB: " << minVal << endl;
-	cout << "max val with RGB: " << maxVal << endl;
-	
-	imshow("H", hsv_channel[0]);	
-	hsv_channel[0].convertTo(hsv_channel[0],CV_16UC1);
-	add(plantpix, hsv_channel[0], plantpix);
-	imshow("plantpix", plantpix);
+	cout << "min val with hsv: " << minVal << endl;
+	cout << "max val with hsv: " << maxVal << endl;
 
-	minMaxLoc(plantpix,&minVal, &maxVal, &minLoc, &maxLoc);
-	cout << "min val with HSV: " << minVal << endl;
-	cout << "max val with HSV: " << maxVal << endl;
-	imshow("plantpix", plantpix);
+	
+
+	std::vector<cv::Mat> cmyk;
+	rgb2cmyk(im0, cmyk);
+
+	cout << "make cmyk" << endl;
+	imshow("C", cmyk[2]);
 	waitKey(0);
+
+	//multiply(cmyk[0],255,cmyk[0]);
+	add(plantpix, cmyk[2], plantpix);
+	//cmyk[0].convertTo(cmyk[0],CV_8UC1);
+
+	minMaxLoc(cmyk[2],&minVal, &maxVal, &minLoc, &maxLoc);
+	cout << "min cmykval: " << minVal << endl;
+	cout << "max cmykval: " << maxVal << endl;	
+
+	imshow("C",cmyk[2]);
+	//imshow("M", cmyk[1]);
+	imshow("plantpix", plantpix);
+	cout << "convert, add to plantpix and then convert back" << endl;
+	waitKey(0);
+	imwrite("PlantPix.png",plantpix);
+	minMaxLoc(plantpix,&minVal, &maxVal, &minLoc, &maxLoc);
+	cout << "min val with CMYK: " << minVal << endl;
+	cout << "max val with CMYK: " << maxVal << endl;
+
 
 
 	divide(plantpix,2,plantpix);
+	multiply(plantpix,255,plantpix);
 
 	minMaxLoc(plantpix,&minVal, &maxVal, &minLoc, &maxLoc);
 	cout << "min val end: " << minVal << endl;
@@ -106,18 +126,16 @@ int main( int argc, char** argv ){
 	
 
 		plantpix.convertTo(plantpix, CV_8UC1);
-		hsv_channel[0].convertTo(hsv_channel[0],CV_8UC1);
-		RGB_channel[0].convertTo(RGB_channel[0],CV_8UC1);
+		//lab_channel[2].convertTo(lab_channel[2],CV_8UC1);
+		hsv_channel[2].convertTo(hsv_channel[2],CV_8UC1);
+		//cmyk2[0].convertTo(cmyk2[0],CV_8UC1);
 	
 
 	imshow("plantpix", plantpix);
-	imshow("H", hsv_channel[0]);
-	imshow("B", RGB_channel[0]);
-	imwrite("plantpix.png",plantpix);
-
-	image.release();
-	imagehsv.release();
-	plantpix.release();
+	imshow("S", hsv_channel[1]);
+	imshow("C", cmyk[2]);
+	//imshow("M", cmyk[1]);
+	//imwrite("PlantPix.png",plantpix);
 
 	//H from HSV and Blue from RGB is good for black
 	

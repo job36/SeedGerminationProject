@@ -14,6 +14,7 @@
 int GRAYLEVEL = 256;
 char strStartPath[100];
 char strEndPath[100];
+char strMaskPath[100];
 #define MAX_BRIGHTNESS 255
 //const double INFO_THRESHOLD = 0.2;
 
@@ -23,8 +24,9 @@ using namespace std;
 // binarization by Otsu's method
 // based on maximization of inter-class variance
 //----------------------------------------------------------
-void binarize_otsu(IplImage* image, IplImage* imgBin )
+void binarize_otsu(IplImage* image, IplImage* imgBin, IplImage* imageMask)
 {
+	int taille = 0;
 	int hist[GRAYLEVEL];
 	double prob[GRAYLEVEL],
 	       omega[GRAYLEVEL]; // prob of graylevels
@@ -44,15 +46,22 @@ void binarize_otsu(IplImage* image, IplImage* imgBin )
 	{
 		unsigned char* pData = (unsigned char*) (image->imageData + i *
 				image->widthStep);
+
+unsigned char* maskData = (unsigned char*) (imageMask->imageData + i *
+				imageMask->widthStep);
 		for (int j = 0; j < size.width; ++j)
 		{
 // in here, make it so it only looks at pixels inside the circle (mask==white)
-			int k = (int)((unsigned char) *(pData+j));
-			hist[k]++;
+			int km = (int)((unsigned char) *(maskData+j));
+			if(km == 255){
+				int k = (int)((unsigned char) *(pData+j));
+				hist[k]++;
+				taille++;
+			}
 		}
 	}
 // here, make taille (size in french!) equal to the number of actual pixels in the mask not pixels in the image in total.
-	int taille = size.width * size.height;
+	//int taille = size.width * size.height;
 
 	// calculation of probability density
 	for ( i = 0; i < GRAYLEVEL; ++i )
@@ -120,9 +129,13 @@ void binarize_otsu(IplImage* image, IplImage* imgBin )
 					image->widthStep));
 		unsigned char* pDataBin = (unsigned char*) (imgBin->imageData + (y *
 					imgBin->widthStep));
+
+		unsigned char* maskData = (unsigned char*) (imageMask->imageData + (y*
+				imageMask->widthStep));
 		for (x = 0; x < size.width; ++x)
 		{
-			if ( *(pData+x) > threshold)
+			int km = (int)((unsigned char) *(maskData+x));
+			if (( *(pData+x) > threshold) &&(km == 255))
 			{
 				*(pDataBin+x) = MAX_BRIGHTNESS;
 			}
@@ -141,7 +154,7 @@ int main(int argc, char* argv[] )
 	std::vector <std::string> words; // Vector to hold our words read
 	std::string str; // Temp string to
 	std::cout << "Read from a file!" << std::endl;
-	std::ifstream fin("pics.txt"); // Open it up!
+	std::ifstream fin("masks.txt"); // Open it up!
 
 
 	while (fin >> str){ 
@@ -153,22 +166,25 @@ int main(int argc, char* argv[] )
 
 		IplImage* image = 0;
 		IplImage* imgBin = 0;
+		IplImage* imageMask =0;
 		clock_t start = clock();
 
 		const char* imagename = words.at(i).c_str();
 		std::cout<<"Image Name: "<< imagename << std::endl;
-		sprintf(strStartPath, "Masks0/%s", imagename);
+		sprintf(strStartPath, "ChannelEnd/%s", imagename);
 		sprintf(strEndPath, "OtsuEnd/%s", imagename);
+		sprintf(strMaskPath, "Masks0/%s",imagename);
 		std::cout<<"Start Path: "<< strStartPath << std::endl;
 		std::cout<<"End Path: "<< strEndPath << std::endl;
 
 		image = cvLoadImage(strStartPath, CV_LOAD_IMAGE_GRAYSCALE);
+				imageMask = cvLoadImage(strMaskPath, CV_LOAD_IMAGE_GRAYSCALE);
 		std::cout<<"Load Image "<< std::endl;
 
 		//if ( image != NULL )
 		//{
 		imgBin = cvCloneImage(image);
-		binarize_otsu(image,imgBin);
+		binarize_otsu(image,imgBin, imageMask);
 		cvSaveImage(strEndPath, imgBin);
 		cvReleaseImage(&image);
 		cvReleaseImage(&imgBin);
