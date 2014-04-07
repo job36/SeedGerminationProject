@@ -14,6 +14,7 @@ int main(int argc, char** argv)
   std::vector<Mat> Masks;
   char mask_name[50];
   char path[50];
+  Mat src_gray, src;
 
   std::vector <std::string> words; // Vector to hold our words read
   std::string str; // Temp string to
@@ -26,8 +27,6 @@ int main(int argc, char** argv)
   fin.close();
 
   for (int i = 0; i < words.size(); ++i){
-	  Mat src_gray;
-
 
 	  const char* imagename = words.at(i).c_str();
 	  std::cout<<"Image Name: "<< imagename << std::endl;
@@ -37,7 +36,7 @@ int main(int argc, char** argv)
 	  //std::cout<<"End Path: "<< strEndPath << std::endl;
 
 	  /// Read the image
-	  Mat src = imread( strStartPath, 1 );
+	  src = imread( strStartPath, 1 );
 	  //Mat imageDest = cvCreateMat(src.rows, src.cols, CV_8UC3);
 	  //imageDest.setTo(Scalar(0,0,0));
 	  if( !src.data )
@@ -65,12 +64,6 @@ int main(int argc, char** argv)
 	  	//add to vector
 	 	 Masks.push_back(image);
 
-	  }
-
-	  std::cout<<"Drawing circles: "<<std::endl;
-	  /// Draw the circles detected
-	  for( size_t i = 0; i < circles.size(); i++ )
-	  {
 
 	      Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 	      int radius = cvRound(circles[i][2]);
@@ -78,28 +71,17 @@ int main(int argc, char** argv)
 	      circle( Masks.at(i), center, 3, Scalar(255,255,255), -1, 8, 0 );
 	      // circle outline
 	      circle( Masks.at(i), center, radius, Scalar(255,255,255), -3, 8, 0 );
-	   }
 
-
-	 for( int i = 0; i < circles.size(); i++ )
-	  {
-
-	   //src.copyTo(imageDest, Masks.at(i));
-	   //sprintf(mask_name, "imagename", i);
 	   sprintf(path, "Masks%d/%s", i, imagename);
-	   namedWindow(mask_name, CV_WINDOW_NORMAL);
-	   imshow(mask_name, Masks.at(i));
 	   imwrite(path, Masks.at(i));
 
-	   //Cleanup
-	   //imageDest.release();
 	   Masks.at(i).setTo(Scalar(0,0,0));
 	   //Masks.at(i).release();
 	   src.release();
 	   src_gray.release();
 
-	  }
 
+	  }
 
 
   }

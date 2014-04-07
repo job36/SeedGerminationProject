@@ -8,9 +8,10 @@
 using namespace cv;
 using namespace std;
 
-int thresh = 100;
+int thresh = 10;
 int max_thresh = 255;
 RNG rng(12345);
+int amount =0;
 Mat src; Mat src_gray;
 char strStartPath[50];
 char strEndPath[50];
@@ -31,11 +32,15 @@ int main( int argc, char** argv )
   while (fin >> str){ 
     words.push_back(str);
   }
-  fin.close();	
+  fin.close();
+
+  ofstream myfile;
+  myfile.open ("example.txt");
+  //myfile << "Writing this to a file.\n";
+  //myfile.close();	
 
  for (int i = 0; i < words.size(); ++i){
 
-		
 
 	  const char* imagename = words.at(i).c_str();
 	  std::cout<<"Image Name: "<< imagename << std::endl;
@@ -58,13 +63,17 @@ int main( int argc, char** argv )
 
 	  //createTrackbar( " Threshold:", "Source", &thresh, max_thresh, thresh_callback );
 	  thresh_callback( 0, 0 );
-
+	
+	myfile << amount << "\n";
+	amount = 0;	
 	//src.release();
 	//src_gray.release();
 
 	  //waitKey(0);
 	  //return(0);
 }
+myfile.close();
+
 }
 
 /** @function thresh_callback */
@@ -77,7 +86,7 @@ void thresh_callback(int, void* )
   /// Detect edges using Threshold
   threshold( src_gray, threshold_output, thresh, 255, THRESH_BINARY );
   /// Find contours
-  findContours( threshold_output, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+  findContours( threshold_output, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
   /// Approximate contours to polygons + get bounding rects and circles
   vector<vector<Point> > contours_poly( contours.size() );
@@ -87,11 +96,12 @@ void thresh_callback(int, void* )
 
   for( int i = 0; i < contours.size(); i++ ) { 
 
-		if((contours[i].size() < 400) && (contours[i].size() > 50)){
+		if((contours[i].size() < 350) && (contours[i].size() > 55)){
 		approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
 	       boundRect[i] = boundingRect( Mat(contours_poly[i]) );
 		std::cout << contours[i].size() << std::endl;
 	       minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+		amount++;
 		}
 
      }

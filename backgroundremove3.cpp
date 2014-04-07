@@ -13,7 +13,7 @@ int main(int argc, char** argv)
   std::vector <std::string> words; // Vector to hold our words read
   std::string str; // Temp string to
   std::cout << "Read from a file!" << std::endl;
-  std::ifstream fin("pics.txt"); // Open it up!
+  std::ifstream fin("masks.txt"); // Open it up!
 
 
   while (fin >> str){ 
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
 	const char* imagename = words.at(i).c_str();
 	std::cout<<"Image Name: "<< imagename << std::endl;
-	sprintf(strStartPath, "RemoveBackgroundStart/%s", imagename);
+	sprintf(strStartPath, "MasksStart/%s", imagename);
 	sprintf(strEndPath, "RemoveBackgroundEnd/%s", imagename);
 	std::cout<<"Start Path: "<< strStartPath << std::endl;
 	std::cout<<"End Path: "<< strEndPath << std::endl;
