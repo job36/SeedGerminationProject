@@ -46,7 +46,7 @@ int main( int argc, char** argv )
    vector<Vec4i> hierarchy;
 
    /// Detect edges using Threshold
-   threshold( src_gray, threshold_output, thresh, 255, THRESH_BINARY );
+  //threshold( src_gray, threshold_output, thresh, 255, THRESH_BINARY );
 
    /// Find contours
    findContours( threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );

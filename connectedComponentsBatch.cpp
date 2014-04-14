@@ -11,7 +11,8 @@ using namespace std;
 int thresh = 10;
 int max_thresh = 255;
 RNG rng(12345);
-int amount =0;
+int amount = 0;
+int number = 0;
 Mat src; Mat src_gray;
 char strStartPath[50];
 char strEndPath[50];
@@ -63,8 +64,9 @@ int main( int argc, char** argv )
 
 		//createTrackbar( " Threshold:", "Source", &thresh, max_thresh, thresh_callback );
 		thresh_callback( 0, 0 );
-
-		myfile << amount << "\n";
+		
+		number++;
+		myfile <<number << " " << amount << "\n";
 		amount = 0;
 
 		//src.release();
@@ -122,7 +124,7 @@ void thresh_callback(int, void* )
 	/// Show in a window
 	//namedWindow( "Contours", CV_WINDOW_NORMAL );
 	//imshow( "Contours", drawing );
-	imwrite(strEndPath, drawing);
+	//imwrite(strEndPath, drawing);
 	drawing.release();
 	threshold_output.release();
 }
