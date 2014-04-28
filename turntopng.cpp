@@ -10,6 +10,10 @@ char strEndPath[100];
 int main(int argc, char** argv)
 {
 
+	std::string tempPicPath = (argv[1]);
+
+	const char* picPath = tempPicPath.c_str();
+
 	std::vector <std::string> words; // Vector to hold our words read
 	std::string str; // Temp string to
 	std::cout << "Read from a file!" << std::endl;
@@ -25,7 +29,9 @@ int main(int argc, char** argv)
 
 		const char* imagename = words.at(i).c_str();
 
-		sprintf(strStartPath, "timelapse_201402201220/%s", imagename);
+		//sprintf(strStartPath, "timelapse_201312202031/%s", imagename);
+
+		sprintf(strStartPath, "%s/%s", picPath, imagename);
 
 		IplImage* img=cvLoadImage(strStartPath);
 

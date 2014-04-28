@@ -25,7 +25,7 @@ int main(int argc, char** argv)
   vector<Vec3f> circles;
 
   /// Apply the Hough Transform to find the circles
-  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 70, 50, 0, 0 );
+  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 50, 30,80, 400 );
 
   //creating a new image
   Mat maskimage(src.rows, src.cols, CV_8UC3);

@@ -28,7 +28,7 @@ int main( int argc, char** argv )
 
 		  const char* imagename = words.at(i).c_str();
 		  std::cout<<"Image Name: "<< imagename << std::endl;
-		  sprintf(strStartPath, "MasksStart/%s", imagename);
+		  sprintf(strStartPath, "ChannelEnd/%s", imagename);
 		  sprintf(strEndPath, "HistoEnd/%s", imagename);
 		  std::cout<<"Start Path: "<< strStartPath << std::endl;
 		  std::cout<<"End Path: "<< strEndPath << std::endl;
@@ -46,31 +46,36 @@ int main( int argc, char** argv )
 		    { cout<<"Usage: ./Histogram_Demo <path_to_image>"<<endl;
 		      return -1;}
 
-		  /// Convert to grayscale   YCrCb
-		  cvtColor( src, ycrcb, CV_BGR2HSV );
+		cvtColor( src, src, CV_BGR2GRAY );
+		
+		equalizeHist( src, dst );
+		
 
-		  vector<Mat> channels;
-		  split(ycrcb,channels);
+		  /// Convert to grayscale   YCrCb
+		 // cvtColor( src, ycrcb, CV_BGR2HSV );
+
+		  //vector<Mat> channels;
+		  //split(ycrcb,channels);
 
 		  /// Apply Histogram Equalization
-		  equalizeHist( channels[0], channels[0] );
+		  //equalizeHist( channels[0], channels[0] );
 		  //equalizeHist( channels[1], channels[1] );
 		  //equalizeHist( channels[2], channels[2] );
 
-		  Mat result;
-		  merge(channels,ycrcb);
+		  //Mat result;
+		  //merge(channels,ycrcb);
 
-		  cvtColor( ycrcb, result, CV_HSV2BGR );
+		  //cvtColor( ycrcb, result, CV_HSV2BGR );
 
 		  /// Display results
 		  namedWindow( source_window, CV_WINDOW_NORMAL );
 		  namedWindow( equalized_window, CV_WINDOW_NORMAL );
 
-		  imshow( source_window, src );
-		  imshow( equalized_window, result );
-		  imwrite( strEndPath, result );
+		 //imshow( source_window, src );
+		  //imshow( equalized_window, result );
+		  imwrite( strEndPath, dst );
 		  src.release();
-		  ycrcb.release();
+		  //ycrcb.release();
 		  dst.release();
 
 		  /// Wait until user exits the program

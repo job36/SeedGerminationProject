@@ -81,7 +81,7 @@ int main( int argc, char** argv ){
 		  //imageminus = cvLoadImage(strStartPathMinus, CV_LOAD_IMAGE_COLOR);
 		  //imageminustwo = cvLoadImage(strStartPathMinusTwo, CV_LOAD_IMAGE_COLOR);
 
-		if(i == 0){
+		/*if(i == 0){
 			imageminus = image.clone();
 			imageminustwo = image.clone();
 			imageminusthree = image.clone();
@@ -99,7 +99,7 @@ int main( int argc, char** argv ){
 			imageminusthree = imageminustwo.clone();
 			//imageminusfour = imageminustwo.clone();
 			//imageminusfive = imageminustwo.clone();
-		}/*else if(i == 3){
+		}*//*else if(i == 3){
 			imageminus = image.clone();
 			imageminustwo = imageminus.clone();
 			imageminusthree = imageminustwo.clone();
@@ -119,22 +119,22 @@ int main( int argc, char** argv ){
 
 		//get hsv components in the images
 		cvtColor(image, imagehsv, CV_BGR2HSV);
-		cvtColor(imageminus, imagehsvminus, CV_BGR2HSV);
-		cvtColor(imageminustwo, imagehsvminustwo, CV_BGR2HSV);
-		cvtColor(imageminusthree, imagehsvminusthree, CV_BGR2HSV);
+		//cvtColor(imageminus, imagehsvminus, CV_BGR2HSV);
+		//cvtColor(imageminustwo, imagehsvminustwo, CV_BGR2HSV);
+		//cvtColor(imageminusthree, imagehsvminusthree, CV_BGR2HSV);
 		//cvtColor(imageminusfour, imagehsvminusfour, CV_BGR2HSV);
 		//cvtColor(imageminusfive, imagehsvminusfive, CV_BGR2HSV);
 
 
 		// The actual splitting.
 		split(imagehsv, hsv_channel);
-		split(imagehsvminus, hsv_channel_minus);
-		split(imagehsvminustwo, hsv_channel_minus_two);
+		//split(imagehsvminus, hsv_channel_minus);
+		//split(imagehsvminustwo, hsv_channel_minus_two);
 		split(image, RGB_channel);
-		split(imageminus, RGB_channel_minus);
-		split(imageminustwo, RGB_channel_minus_two);
-		split(imagehsvminusthree, hsv_channel_minus_three);
-		split(imageminusthree, RGB_channel_minus_three);
+		//split(imageminus, RGB_channel_minus);
+		//split(imageminustwo, RGB_channel_minus_two);
+		//split(imagehsvminusthree, hsv_channel_minus_three);
+		//split(imageminusthree, RGB_channel_minus_three);
 		//split(imagehsvminusfour, hsv_channel_minus_four);
 		//split(imageminusfour, RGB_channel_minus_four);
 		//split(imagehsvminusfive, hsv_channel_minus_five);
@@ -150,12 +150,12 @@ int main( int argc, char** argv ){
 
 		//add remaining RGB channels
 
-		RGB_channel_minus[0].convertTo(RGB_channel_minus[0],CV_16UC1);
-		add(plantpix, RGB_channel_minus[0], plantpix);
-		RGB_channel_minus_two[0].convertTo(RGB_channel_minus_two[0],CV_16UC1);
-		add(plantpix, RGB_channel_minus_two[0], plantpix);
-		RGB_channel_minus_three[0].convertTo(RGB_channel_minus_three[0],CV_16UC1);
-		add(plantpix, RGB_channel_minus_three[0], plantpix);
+		//RGB_channel_minus[0].convertTo(RGB_channel_minus[0],CV_16UC1);
+		//add(plantpix, RGB_channel_minus[0], plantpix);
+		//RGB_channel_minus_two[0].convertTo(RGB_channel_minus_two[0],CV_16UC1);
+		//add(plantpix, RGB_channel_minus_two[0], plantpix);
+		//RGB_channel_minus_three[0].convertTo(RGB_channel_minus_three[0],CV_16UC1);
+		//add(plantpix, RGB_channel_minus_three[0], plantpix);
 		//RGB_channel_minus_four[0].convertTo(RGB_channel_minus_four[0],CV_16UC1);
 		//add(plantpix, RGB_channel_minus_four[0], plantpix);
 		//RGB_channel_minus_five[0].convertTo(RGB_channel_minus_five[0],CV_16UC1);
@@ -166,12 +166,12 @@ int main( int argc, char** argv ){
 		hsv_channel[0].convertTo(hsv_channel[0],CV_16UC1);
 		add(plantpix, hsv_channel[0], plantpix);
 
-		hsv_channel_minus[0].convertTo(hsv_channel_minus[0],CV_16UC1);
-		add(plantpix, hsv_channel_minus[0], plantpix);
-		hsv_channel_minus_two[0].convertTo(hsv_channel_minus_two[0],CV_16UC1);
-		add(plantpix, hsv_channel_minus_two[0], plantpix);
-		hsv_channel_minus_three[0].convertTo(hsv_channel_minus_three[0],CV_16UC1);
-		add(plantpix, hsv_channel_minus_three[0], plantpix);
+		//hsv_channel_minus[0].convertTo(hsv_channel_minus[0],CV_16UC1);
+		//add(plantpix, hsv_channel_minus[0], plantpix);
+		//hsv_channel_minus_two[0].convertTo(hsv_channel_minus_two[0],CV_16UC1);
+		//add(plantpix, hsv_channel_minus_two[0], plantpix);
+		//hsv_channel_minus_three[0].convertTo(hsv_channel_minus_three[0],CV_16UC1);
+		//add(plantpix, hsv_channel_minus_three[0], plantpix);
 		//hsv_channel_minus_four[0].convertTo(hsv_channel_minus_four[0],CV_16UC1);
 		//add(plantpix, hsv_channel_minus_four[0], plantpix);
 		//hsv_channel_minus_five[0].convertTo(hsv_channel_minus_five[0],CV_16UC1);
@@ -179,17 +179,19 @@ int main( int argc, char** argv ){
 
 		//divide by number of channels and convert back to format within 0-255
 
-		divide(plantpix,8,plantpix);
+		divide(plantpix,2,plantpix);
 		plantpix.convertTo(plantpix, CV_8UC1);
+
+
 	
 		//save image to end location
 		imwrite(strEndPath,plantpix);
 
 		//try and free up images so that program doesn't crash
 
-		imageminus = image.clone();
-		imageminustwo = imageminus.clone();
-		imageminusthree = imageminustwo.clone();
+		//imageminus = image.clone();
+		//imageminustwo = imageminus.clone();
+		//imageminusthree = imageminustwo.clone();
 		//imageminusfour = imageminusthree.clone();
 		//imageminusfive = imageminusfour.clone();
 
@@ -198,19 +200,19 @@ int main( int argc, char** argv ){
 		//cvReleaseImage( &imageminustwo );
 
 	
-//		hsv_channel[3].release();
-//		hsv_channel_minus[3].release();
-//		hsv_channel_minus_two[3].release();
-//		RGB_channel[3].release();
-//		RGB_channel_minus[3].release();
-//		RGB_channel_minus_two[3].release();
-//		image.release();
-//		imagehsv.release();
-//		imageminus.release();
-//		imagehsvminus.release();
-//		imageminustwo.release();
-//		imagehsvminustwo.release();
-//		plantpix.release();
+		//hsv_channel[3].release();
+		//hsv_channel_minus[3].release();
+		//hsv_channel_minus_two[3].release();
+		//RGB_channel[3].release();
+		//RGB_channel_minus[3].release();
+		//RGB_channel_minus_two[3].release();
+		//image.release();
+		//imagehsv.release();
+		//imageminus.release();
+		//imagehsvminus.release();
+		//imageminustwo.release();
+		//imagehsvminustwo.release();
+		plantpix.release();
 
 
 	}

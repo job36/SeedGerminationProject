@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
+#include <ostream>
 
 using namespace cv;
 using namespace std;
@@ -21,6 +23,9 @@ int cols = 0;
 /** @function main */
 int main( int argc, char** argv )
 {
+
+	ofstream myfile;
+	myfile.open ("groundresults.txt");
 
 	ground_truth = imread(argv[1], CV_LOAD_IMAGE_COLOR);
 	program_output = imread(argv[2], CV_LOAD_IMAGE_COLOR);
@@ -110,6 +115,14 @@ int main( int argc, char** argv )
 	std::cout << "False Positive Seed Pixels: " << seed_false_positive << std::endl;
 
 	std::cout << "Shoot True Positive: " << shoot_true_positive << std::endl;
+
+	myfile << " Seed True Positive " << seed_true_positive << "\n";
+	myfile << " Seed True Negative " << seed_true_negative << "\n";
+
+	myfile << " False Negative Seed Pixels " << seed_false_negative << "\n";
+	myfile << " False Positive Seed Pixels " << seed_false_positive << "\n";
+
+	myfile.close();
 
 	imshow( "New Image", image);
 

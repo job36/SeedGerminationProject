@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include <sstream>
+#include <cstdlib> 
 
 using namespace cv;
 using namespace std;
@@ -13,9 +15,11 @@ int max_thresh = 255;
 RNG rng(12345);
 int amount = 0;
 int number = 0;
+int minimum =0;
 Mat src; Mat src_gray;
 char strStartPath[50];
 char strEndPath[50];
+char strExample[50];
 /// Function header
 void thresh_callback(int, void* );
 
@@ -23,7 +27,12 @@ void thresh_callback(int, void* );
 int main( int argc, char** argv )
 {
 
+	minimum = atoi(argv[1]);
 
+	//istringstream ss(argv[1]);
+	//int test;
+	//if (!(ss >> test))
+    	//cerr << "Invalid number " << argv[1] << '\n';
 
 	std::vector <std::string> words; // Vector to hold our words read
 	std::string str; // Temp string to
@@ -35,8 +44,10 @@ int main( int argc, char** argv )
 	}
 	fin.close();
 
+	sprintf(strExample, "Examples/example%d.txt", minimum);
+
 	ofstream myfile;
-	myfile.open ("example.txt");
+	myfile.open (strExample);
 	//myfile << "Writing this to a file.\n";
 	//myfile.close();	
 
@@ -58,7 +69,7 @@ int main( int argc, char** argv )
 		blur( src_gray, src_gray, Size(3,3) );
 
 		/// Create Window
-		char* source_window = "Source";
+		//char* source_window = "Source";
 		//namedWindow( source_window, CV_WINDOW_NORMAL );
 		//imshow( source_window, src );
 
@@ -99,7 +110,7 @@ void thresh_callback(int, void* )
 
 	for( int i = 0; i < contours.size(); i++ ) { 
 
-		if((contours[i].size() < 350) && (contours[i].size() > 55)){
+		if((contours[i].size() < 500) && (contours[i].size() > minimum)){
 			approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
 			boundRect[i] = boundingRect( Mat(contours_poly[i]) );
 			minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );

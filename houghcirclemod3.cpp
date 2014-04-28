@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   std::vector <std::string> words; // Vector to hold our words read
   std::string str; // Temp string to
   std::cout << "Read from a file!" << std::endl;
-  std::ifstream fin("masks.txt"); // Open it up!
+  std::ifstream fin("pics.txt"); // Open it up!
 
   while (fin >> str){ 
     words.push_back(str);
@@ -53,6 +53,8 @@ int main(int argc, char** argv)
 	  /// Apply the Hough Transform to find the circles
 	  HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 25, 35, 480, 510 );
 
+	  //HoughCircles( src_gray, circles, CV_HOUGH_GRADIENT, 1, src_gray.rows/8, 25, 35, 80, 150 );
+
 	  std::cout<<"Creating Masks: "<<std::endl;
 	  for(int i = 0; i < circles.size(); i++){
 		//creating a new image
@@ -78,6 +80,7 @@ int main(int argc, char** argv)
 	   Masks.at(i).setTo(Scalar(0,0,0));
 	   //Masks.at(i).release();
 	   src.release();
+	   image.release();
 	   src_gray.release();
 
 
